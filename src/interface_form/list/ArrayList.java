@@ -47,56 +47,133 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public boolean add(E value) {
-        return false;
+        addLast(value);
+        return true;
+    }
+
+    public void addLast(E value){
+        if(size == array.length){
+            resize();
+        }
+
+        array[size++] = value;
     }
 
     @Override
-    public boolean add(int index, E value) {
-        return false;
+    public void add(int index, E value) {
+        if(index > size || index < 0){
+            throw new IndexOutOfBoundsException();
+        }
+
+        if(index == size){
+            add(value);
+        }else {
+            if(size == array.length){
+                resize();
+            }
+
+            for (int i = size; i > index ; i--) {
+                array[i] = array[i-1];
+            }
+
+            array[index] = value;
+            size++;
+        }
+    }
+
+    public void addFirst(E value){
+        add(0, value);
     }
 
     @Override
     public E remove(int index) {
-        return null;
+        if (index >= size || index < 0){
+            throw new IndexOutOfBoundsException();
+        }
+
+        E element = (E) array[index];
+
+        for (int i = index; i < size - 1; i++) {
+            array[i] = array[i+1];
+            array[i+1] = null;
+        }
+
+        size--;
+        resize();
+
+        return element;
     }
 
     @Override
     public boolean remove(Object value) {
-        return false;
+        int index = indexOf(value);
+
+        if(index == -1){
+            return false;
+        }
+        remove(index);
+        return true;
     }
 
     @Override
     public boolean contains(Object value) {
-        return false;
+        return indexOf(value) >= 0;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public E get(int index) {
-        return null;
+        if(index >= size || index < 0){
+            throw new IndexOutOfBoundsException();
+        }
+
+        return (E) array[index];
     }
 
     @Override
-    public E set(int index, E value) {
-        return null;
+    public void set(int index, E value) {
+        if(index >= size || index < 0){
+            throw new IndexOutOfBoundsException();
+        }else {
+            array[index] = value;
+        }
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
     public int indexOf(Object value) {
-        return 0;
+        for (int i = 0; i < size; i++) {
+            if(array[i].equals(value)){
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public int lastIndexOf(Object value){
+        for (int i = size-1; i >= 0 ; i--) {
+            if(array[i].equals(value)){
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public void clear() {
-
+        for (int i = 0; i < size; i++) {
+            array[i] = null;
+        }
+        size = 0;
+        resize();
     }
 }

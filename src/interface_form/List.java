@@ -24,7 +24,7 @@ public interface List<E> {
      * @param index 리스트에 요소를 추가할 특정 위치 변수
      * @param value 리스트에 추가할 요소
      */
-    boolean add(int index, E value);
+    void add(int index, E value);
 
     /**
      * 리스트의 index 위치에 있는 요소를 삭제합니다.
@@ -73,7 +73,7 @@ public interface List<E> {
      * @param index 리스트에 접근할 위치 변수
      * @param value 새로 대체할 요소 변수
      */
-    E set(int index, E value);
+    void set(int index, E value);
 
     /**
      * 리스트에 요소가 비어있는지를 반환합니다.
