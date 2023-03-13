@@ -93,6 +93,6 @@ public interface List<E> {
     /**
      * 리스트에 있는 요소를 모두 삭제합니다.
      */
-    void clear();
+    public void clear();
 
 }
