@@ -141,7 +141,36 @@ public class SingleLinkedList<E> implements List<E> {
 
     @Override
     public boolean remove(Object value) {
-        return false;
+        Node<E> preNode = head;
+        Node<E> targetNode = preNode;
+
+        for (;targetNode != null;targetNode = targetNode.next){
+            if(value.equals(targetNode.data)){
+                break;
+            }
+            preNode = targetNode;
+        }
+
+        if(targetNode == null){
+            return false;
+        }
+
+        if(targetNode.equals(head)){
+            remove();
+            return true;
+        }else{
+            preNode.next = targetNode.next;
+
+            if(preNode.next == null){
+                tail = preNode;
+            }
+
+            targetNode.data = null;
+            targetNode.next = null;
+            size--;
+
+            return true;
+        }
     }
 
     @Override
@@ -156,12 +185,12 @@ public class SingleLinkedList<E> implements List<E> {
 
     @Override
     public E get(int index) {
-        return null;
+        return search(index).data;
     }
 
     @Override
     public void set(int index, E value) {
-
+        search(index).data = value;
     }
 
     @Override
@@ -171,7 +200,8 @@ public class SingleLinkedList<E> implements List<E> {
 
     @Override
     public int indexOf(Object value) {
-        return 0;
+        
+        return -1;
     }
 
     @Override
