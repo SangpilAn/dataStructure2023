@@ -175,12 +175,12 @@ public class SingleLinkedList<E> implements List<E> {
 
     @Override
     public boolean contains(Object value) {
-        return false;
+        return indexOf(value) >= 0;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
@@ -195,17 +195,32 @@ public class SingleLinkedList<E> implements List<E> {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
     public int indexOf(Object value) {
+        int index = 0;
+
+        for (Node<E> i = head; i != null ; i = i.next){
+            if(value.equals(i.data)){
+                return index;
+            }
+            index++;
+        }
         
         return -1;
     }
 
     @Override
     public void clear() {
-
+        for (Node<E> i = head; i != null;){
+            Node<E> nextNode = i.next;
+            i.data = null;
+            i.next = null;
+            i = nextNode;
+        }
+        head = tail = null;
+        size = 0;
     }
 }
