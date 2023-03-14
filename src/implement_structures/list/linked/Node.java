@@ -1,4 +1,4 @@
-package interface_form.list.linked;
+package implement_structures.list.linked;
 
 public class Node<E> {
 
