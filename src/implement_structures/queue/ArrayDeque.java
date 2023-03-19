@@ -1,10 +1,10 @@
-package implement_structures.list.queue;
+package implement_structures.queue;
 
 import interface_form.Queue;
 
 import java.util.NoSuchElementException;
 
-public class ArrayQueue<E> implements Queue<E> {
+public class ArrayDeque<E> implements Queue<E> {
 
     private static final int DEFAULT_CAPACITY = 64;
 
@@ -14,14 +14,14 @@ public class ArrayQueue<E> implements Queue<E> {
     private int front;
     private int rear;
 
-    public ArrayQueue(){
+    public ArrayDeque(){
         this.array = new Object[DEFAULT_CAPACITY];
         this.size = 0;
         this.front = 0;
         this.rear = 0;
     }
 
-    public ArrayQueue(int capacity){
+    public ArrayDeque(int capacity){
         this.array = new Object[capacity];
         this.size = 0;
         this.front = 0;
@@ -45,6 +45,10 @@ public class ArrayQueue<E> implements Queue<E> {
 
     @Override
     public boolean offer(E item) {
+        return offerLast(item);
+    }
+
+    public boolean offerLast(E item){
 
         if((rear + 1) % array.length == front){
             resize(array.length * 2);
@@ -58,8 +62,25 @@ public class ArrayQueue<E> implements Queue<E> {
         return true;
     }
 
+    public boolean offerFirst(E item){
+
+        if((front - 1 + array.length) % array.length == rear){
+            resize(array.length * 2);
+        }
+
+        array[front] = item;
+        front = (front - 1 + array.length) % array.length;
+        size++;
+
+        return true;
+    }
+
     @Override
     public E poll() {
+        return pollFirst();
+    }
+
+    public E pollFirst(){
 
         if(size == 0){
             return null;
@@ -79,8 +100,42 @@ public class ArrayQueue<E> implements Queue<E> {
         return item;
     }
 
+    public E pollLast(){
+
+        if(size == 0){
+            return null;
+        }
+
+        E item = (E) array[rear];
+
+        array[rear] = null;
+
+        rear = (rear - 1 + array.length) % array.length;
+        size--;
+
+        if(array.length > DEFAULT_CAPACITY && size < (array.length / 4)){
+            resize(Math.max(DEFAULT_CAPACITY, array.length / 2));
+        }
+
+        return item;
+    }
+
     public E remove(){
-        E item = poll();
+        return removeFirst();
+    }
+
+    public E removeFirst() {
+        E item = pollFirst();
+
+        if(item == null){
+            throw new NoSuchElementException();
+        }
+
+        return item;
+    }
+
+    public E removeLast(){
+        E item = pollLast();
 
         if(item == null){
             throw new NoSuchElementException();
@@ -91,6 +146,10 @@ public class ArrayQueue<E> implements Queue<E> {
 
     @Override
     public E peek() {
+        return peekFirst();
+    }
+
+    public E peekFirst(){
 
         if(size == 0){
             return null;
@@ -100,8 +159,32 @@ public class ArrayQueue<E> implements Queue<E> {
         return item;
     }
 
+    public E peekLast(){
+
+        if(size == 0){
+            return null;
+        }
+
+        E item = (E) array[rear];
+        return item;
+    }
+
     public E element(){
+        return getFirst();
+    }
+
+    public E getFirst(){
         E item = peek();
+
+        if(item == null){
+            throw new NoSuchElementException();
+        }
+
+        return item;
+    }
+
+    public E getLast(){
+        E item = peekLast();
 
         if(item == null){
             throw new NoSuchElementException();

@@ -1,45 +1,54 @@
-package implement_structures.list.linked;
+package implement_structures.linkedList;
 
 import interface_form.List;
 
 import java.util.NoSuchElementException;
 
-public class SingleLinkedList<E> implements List<E> {
+public class DoubleLinkedList<E> implements List<E> {
 
     private Node<E> head;
     private Node<E> tail;
     private int size;
 
-    public SingleLinkedList(){
+    public DoubleLinkedList(){
         this.head = null;
         this.tail = null;
         this.size = 0;
     }
 
-    private Node<E> search(int index){
+    public Node<E> search(int index){
         if(index >= size || index < 0){
             throw new IndexOutOfBoundsException();
         }
 
-        Node<E> x = head;
+        Node<E> x;
 
-        for (int i = 0; i < index; i++) {
-            x = x.next;
+        if(index + 1 > size / 2){
+            x = tail;
+            for (int i = size - 1; i > index ; i++) {
+                x = x.prev;
+            }
+        }else{
+            x = head;
+            for (int i = 0; i < index; i++) {
+                x = x.next;
+            }
         }
-
         return x;
     }
 
     public void addFirst(E value){
         Node<E> newNode = new Node<>(value);
 
-        newNode.next = head;
-        head = newNode;
-        size++;
-
-        if(head.next == null){
-            tail = head;
+        if(head == null){
+            head = newNode;
+            tail = newNode;
+        }else {
+            newNode.next = head;
+            head.prev = newNode;
+            head = newNode;
         }
+        size++;
     }
 
     public void addLast(E value){
@@ -47,12 +56,12 @@ public class SingleLinkedList<E> implements List<E> {
 
         if(size == 0){
             addFirst(value);
-            return;
+        }else {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+            size++;
         }
-
-        tail.next = newNode;
-        tail = newNode;
-        size++;
     }
 
     @Override
@@ -63,6 +72,7 @@ public class SingleLinkedList<E> implements List<E> {
 
     @Override
     public void add(int index, E value) {
+
         if(index > size || index < 0){
             throw new IndexOutOfBoundsException();
         }
@@ -72,18 +82,23 @@ public class SingleLinkedList<E> implements List<E> {
             return;
         }
 
-        if(index == size){
+        if (index == size) {
             addLast(value);
             return;
         }
 
         Node<E> newNode = new Node<>(value);
+
         Node<E> preNode = search(index-1);
+        Node<E> nextNode = preNode.next;
 
-        newNode.next = preNode.next;
         preNode.next = newNode;
-        size++;
+        newNode.prev = preNode;
 
+        newNode.next = nextNode;
+        nextNode.prev = newNode;
+
+        size++;
     }
 
     public E remove(){
@@ -97,8 +112,12 @@ public class SingleLinkedList<E> implements List<E> {
 
         Node<E> nextNode = headNode.next;
 
-        head.data = null;
-        head.next = null;
+        headNode.data = null;
+        headNode.next = null;
+
+        if (nextNode != null){
+            nextNode.prev = null;
+        }
 
         head = nextNode;
         size--;
@@ -120,20 +139,24 @@ public class SingleLinkedList<E> implements List<E> {
             return remove();
         }
 
-        Node<E> preNode = search(index-1);
-        Node<E> targetNode = preNode.next;
+        Node<E> targetNode = search(index);
+        Node<E> preNode = targetNode.prev;
         Node<E> nextNode = targetNode.next;
 
         E element = targetNode.data;
 
-        preNode.next = nextNode;
-
-        if(preNode.next == null){
-            tail = preNode;
-        }
-
         targetNode.data = null;
         targetNode.next = null;
+        targetNode.prev = null;
+
+        preNode.next = nextNode;
+
+        if(nextNode == null){
+            tail = preNode;
+        }else{
+            nextNode.prev = preNode;
+        }
+
         size--;
 
         return element;
@@ -141,36 +164,39 @@ public class SingleLinkedList<E> implements List<E> {
 
     @Override
     public boolean remove(Object value) {
-        Node<E> preNode = head;
-        Node<E> targetNode = preNode;
+        Node<E> x = head;
 
-        for (;targetNode != null;targetNode = targetNode.next){
-            if(value.equals(targetNode.data)){
+        for (;x != null; x = x.next){
+            if(value.equals(x.data)){
                 break;
             }
-            preNode = targetNode;
         }
 
-        if(targetNode == null){
+        if(x == null){
             return false;
         }
 
-        if(targetNode.equals(head)){
+        if (x.equals(head)){
             remove();
-            return true;
-        }else{
-            preNode.next = targetNode.next;
+        }else {
+            Node<E> preNode = x.prev;
+            Node<E> nextNode = x.next;
 
-            if(preNode.next == null){
+            x.data = null;
+            x.next = null;
+            x.prev = null;
+
+            preNode.next = nextNode;
+
+            if(nextNode == null){
                 tail = preNode;
+            }else {
+                nextNode.prev = preNode;
             }
-
-            targetNode.data = null;
-            targetNode.next = null;
             size--;
-
-            return true;
         }
+
+        return true;
     }
 
     @Override
@@ -202,13 +228,24 @@ public class SingleLinkedList<E> implements List<E> {
     public int indexOf(Object value) {
         int index = 0;
 
-        for (Node<E> i = head; i != null ; i = i.next){
+        for (Node<E> i = head; i != null; i = i.next){
             if(value.equals(i.data)){
                 return index;
             }
             index++;
         }
-        
+        return -1;
+    }
+
+    public int lastIndexOf(Object value){
+        int index = size;
+
+        for (Node<E> i = tail; i != null; i = i.prev){
+            index--;
+            if(value.equals(i.data)){
+                return index;
+            }
+        }
         return -1;
     }
 
@@ -218,6 +255,7 @@ public class SingleLinkedList<E> implements List<E> {
             Node<E> nextNode = i.next;
             i.data = null;
             i.next = null;
+            i.prev = null;
             i = nextNode;
         }
         head = tail = null;

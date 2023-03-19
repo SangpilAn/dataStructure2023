@@ -1,4 +1,4 @@
-package implement_structures.list.queue;
+package implement_structures.queue;
 
 import interface_form.Queue;
 

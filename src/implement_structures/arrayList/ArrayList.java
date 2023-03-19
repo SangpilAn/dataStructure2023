@@ -1,4 +1,4 @@
-package implement_structures.list.array;
+package implement_structures.arrayList;
 
 import interface_form.List;
 

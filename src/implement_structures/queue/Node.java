@@ -1,4 +1,4 @@
-package implement_structures.list.linked;
+package implement_structures.queue;
 
 public class Node<E> {
 
@@ -11,5 +11,4 @@ public class Node<E> {
         this.next = null;
         this.prev = null;
     }
-
 }

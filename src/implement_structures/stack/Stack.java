@@ -1,4 +1,4 @@
-package implement_structures.list.stack;
+package implement_structures.stack;
 
 import interface_form.StackInterface;
 
